@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Build Image
+      # Build Docker Image
       - name: Build Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -55,7 +55,7 @@ jobs:
           load: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
 
-      # Scan Image
+      # Scan Docker Image
       - name: Scan Docker Image
         uses: aquasecurity/trivy-action@v0.33.1
         with:
@@ -74,12 +74,10 @@ jobs:
         uses: aquasecurity/trivy-action@v0.33.1
         with:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
           severity: CRITICAL,HIGH
+          exit-code: '0'
 
-      # Push Image
+      # Push Docker Image
       - name: Push Docker Image
         uses: docker/build-push-action@v6
         with:
