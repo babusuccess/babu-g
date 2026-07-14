@@ -1,13 +1,3 @@
-name: CI Pipeline
-
-on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'project/**'
-      - 'README.md'
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,15 +10,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Install Trivy
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget -qO- https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+
       # Filesystem Scan
       - name: Run Trivy Filesystem Scan
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-fs-results.sarif
-          severity: CRITICAL,HIGH
+        run: |
+          trivy fs . \
+            --severity HIGH,CRITICAL \
+            --format sarif \
+            --output trivy-fs-results.sarif
 
       - name: Upload FS Scan Results
         uses: github/codeql-action/upload-sarif@v3
@@ -56,26 +51,26 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
 
       # Scan Docker Image
-      - name: Scan Docker Image
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
-          format: sarif
-          output: trivy-image-results.sarif
-          severity: CRITICAL,HIGH
+      - name: Run Trivy Image Scan
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --format sarif \
+            --output trivy-image-results.sarif \
+            ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
 
       - name: Upload Image Scan Results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-image-results.sarif
 
-      # Fail Pipeline if Vulnerabilities Found
-      - name: Fail on High/Critical Vulnerabilities
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
-          severity: CRITICAL,HIGH
-          exit-code: '0'
+      # Fail pipeline only if HIGH/CRITICAL vulnerabilities exist
+      - name: Check Vulnerabilities
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
 
       # Push Docker Image
       - name: Push Docker Image
@@ -85,25 +80,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.run_id }}
-
-  update-newtag-in-helm-chart:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.TOKEN }}
-
-      - name: Update Helm Image Tag
-        run: |
-          sed -i 's/tag: .*/tag: "${{ github.run_id }}"/' project/values.yaml
-
-      - name: Commit and Push Changes
-        run: |
-          git config --global user.email "babusuccess@gmail.com"
-          git config --global user.name "babusuccess"
-          git add project/values.yaml
-          git commit -m "Update image tag to ${{ github.run_id }}" || echo "No changes to commit"
-          git push
