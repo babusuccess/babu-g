@@ -1,2 +1,9 @@
 # Default values for project.
 env: babu-stg
+app: myapp-prod
+images:
+  repository: devpipeline/ravi
+  tag: "v1"
+  
+metadata:
+  name: nginx-dep-prod
