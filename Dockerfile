@@ -1,2 +1,2 @@
-From: nginx
-copy: index.htm /usr/share/nginx/html/index.html
+From nginx
+copy index.htm /usr/share/nginx/html/index.html
