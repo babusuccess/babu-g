@@ -2,8 +2,7 @@
 env: babu-stg
 app: myapp-prod
 images:
-  repository: devpipeline/ravi
+  repository: babugyadav/nginx
   tag: "v1"
   
-metadata:
-  name: nginx-dep-prod
+
