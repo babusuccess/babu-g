@@ -1,3 +1,6 @@
 # Default values for project.
 env: dev
-tag: "v1"
+app: my-app
+images:
+  repository: babugyadav/nginx
+  tag: "v1"
