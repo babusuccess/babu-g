@@ -1,26 +1,3 @@
 # Default values for project.
-<<<<<<< HEAD
-env: babu-stg
-
-app: nginx
-
-replicaCount: 6
-
-image:
-  repository: babugyadav/nginx
-<<<<<<< HEAD
-  tag: "29422741427"
-=======
 env: dev
-app: myapp-prod
-images:
-  repository: babugyadav/nginx
-  tag: "v1"
->>>>>>> 9a81ff860b4ebc4980b4becdedd408507cd4208f
-  
-=======
-  tag: "29317810428"
-  pullPolicy: IfNotPresent
->>>>>>> 4a02d09 (argo cd)
-
-containerPort: 80
+tag: "v1"

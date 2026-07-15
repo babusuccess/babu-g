@@ -1,31 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
-  name: {{ .Values.app }}
-  labels:
-    app: {{ .Values.app }}
-    env: {{ .Values.env }}
-
+  name: my-app-dev
+  namespace: dev
 spec:
-  replicas: {{ .Values.replicaCount }}
-
+  replicas: 6
   selector:
     matchLabels:
-      app: {{ .Values.app }}
-      env: {{ .Values.env }}
-
+      app: my-app
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: my-app
         env: {{ .Values.env }}
-
+        
     spec:
       containers:
-        - name: {{ .Values.app }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-
+        - name: my-app
+          image: nginx:latest
           ports:
-            - containerPort: {{ .Values.containerPort }}
+            - containerPort: 80
+          env:
+            - name: ENV
+              value: {{ .Values.env }}
