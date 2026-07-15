@@ -1,4 +1,5 @@
 # Default values for project.
+<<<<<<< HEAD
 env: babu-stg
 
 app: nginx
@@ -9,6 +10,13 @@ image:
   repository: babugyadav/nginx
 <<<<<<< HEAD
   tag: "29422741427"
+=======
+env: dev
+app: myapp-prod
+images:
+  repository: babugyadav/nginx
+  tag: "v1"
+>>>>>>> 9a81ff860b4ebc4980b4becdedd408507cd4208f
   
 =======
   tag: "29317810428"
