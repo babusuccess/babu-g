@@ -3,6 +3,6 @@ env: babu-stg
 app: myapp-prod
 images:
   repository: babugyadav/nginx
-  tag: "29422741427"
+  tag: "29424994165"
   
 
