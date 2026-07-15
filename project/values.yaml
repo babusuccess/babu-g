@@ -3,6 +3,6 @@ env: dev
 app: myapp-prod
 images:
   repository: babugyadav/nginx
-  tag: "v"
+  tag: "v1"
   
 
