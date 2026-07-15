@@ -1,8 +1,8 @@
 # Default values for project.
-env: babu-stg
+env: dev
 app: myapp-prod
 images:
   repository: babugyadav/nginx
-  tag: "29424994165"
+  tag: "v"
   
 
