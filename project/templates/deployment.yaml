@@ -1,24 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-  name: nginx-deployment-stg
+  name: {{ .Values.app }}
   labels:
-    app: nginx
-    env: dev
+    app: {{ .Values.app }}
+    env: {{ .Values.env }}
+
 spec:
-  replicas: 6
+  replicas: {{ .Values.replicaCount }}
+
   selector:
     matchLabels:
-      app: nginx
-      env: dev
+      app: {{ .Values.app }}
+      env: {{ .Values.env }}
+
   template:
     metadata:
       labels:
-        app: nginx
-        env: dev
+        app: {{ .Values.app }}
+        env: {{ .Values.env }}
+
     spec:
       containers:
-      - name: nginx
-        image: nginx:latest
-        ports:
-        - containerPort: 80
+        - name: {{ .Values.app }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.containerPort }}
