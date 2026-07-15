@@ -3,4 +3,4 @@ env: dev
 app: my-app
 images:
   repository: babugyadav/nginx
-  tag: "29431270515"
+  tag: "29431480954"
